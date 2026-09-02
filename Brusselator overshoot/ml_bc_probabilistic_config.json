@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_BC_probabilistic_boundary_v1",
+  "geometry_manifest_csv": "experiment_outputs/ml_BC_boundary_geometry_v1/sampling_state_manifest.csv",
+  "initial_labels_csv": "experiment_outputs/ml_BC_boundary_initial_labeling_v1/initial_seed_labels.csv",
+  "output_root": "experiment_outputs",
+  "feature_columns": ["normalized_alpha_1", "normalized_alpha_2"],
+  "positive_class": "C",
+  "negative_class": "B",
+  "kernel": {
+    "name": "ARD_squared_exponential",
+    "initial_starts": [
+      [0.5, 0.5, 1.0],
+      [1.0, 1.0, 1.0],
+      [0.25, 0.5, 1.5],
+      [0.5, 0.25, 1.5]
+    ],
+    "lengthscale_bounds": [0.12, 3.0],
+    "signal_std_bounds": [0.2, 30.0],
+    "jitter": 1e-8
+  },
+  "laplace": {
+    "maximum_iterations": 100,
+    "tolerance": 1e-10
+  },
+  "optimizer": {
+    "method": "L-BFGS-B",
+    "maximum_iterations": 250,
+    "function_tolerance": 1e-10
+  },
+  "dense_grid_size": 201,
+  "active_batch_size": 8,
+  "active_acquisition": {
+    "criterion": "predictive_entropy_times_training_novelty_times_batch_diversity",
+    "novelty_scale": 0.25,
+    "diversity_scale": 0.25,
+    "floor_weight": 0.25
+  },
+  "uniform_baseline": {
+    "criterion": "deterministic_farthest_point_from_training_and_previous_baseline_points"
+  },
+  "fixed_test_policy": "save blind probabilities now; do not use test points for fitting, hyperparameter selection, or acquisition",
+  "probability_status": "Laplace-probit GP posterior; empirical calibration not established until fixed-test labels are generated",
+  "exact_edge_orbit_used": false,
+  "held_out_CA_region_used": false,
+  "random_seed_used": false,
+  "claim_scope": "initial probabilistic model of the B-C separator intersection in the frozen two-dimensional plane; not a full-state basin boundary"
+}

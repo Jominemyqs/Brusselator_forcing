@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_BC_pair_acquisition_sensitivity_v1",
+  "output_root": "experiment_outputs",
+  "geometry_manifest_csv": "experiment_outputs/ml_BC_boundary_geometry_v1/sampling_state_manifest.csv",
+  "initial_labels_csv": "experiment_outputs/ml_BC_boundary_initial_labeling_v1/initial_seed_labels.csv",
+  "nominal_model_npz": "experiment_outputs/ml_BC_probabilistic_boundary_v1/probit_gp_model.npz",
+  "revealed_index_sources": [
+    "experiment_outputs/ml_BC_acquisition_labeling_v1/acquisition_labels.csv",
+    "experiment_outputs/ml_BC_fixed_test_labeling_v1/fixed_test_labels.csv",
+    "experiment_outputs/ml_BC_edge_bracket_labeling_v1/edge_bracket_endpoint_labels.csv"
+  ],
+  "training_role": "initial_seed",
+  "candidate_role": "acquisition_pool",
+  "feature_columns": ["normalized_alpha_1", "normalized_alpha_2"],
+  "positive_class": "C",
+  "negative_class": "B",
+  "training_count": 25,
+  "pair_geometry": {
+    "maximum_normalized_separation": 0.2500001,
+    "minimum_normalized_separation": 0.1249999,
+    "distance_scale": 0.18,
+    "normal_gradient_step": 0.01,
+    "orientation_floor": 0.05
+  },
+  "joint_posterior_sampling": {
+    "sample_count": 8192,
+    "random_seed": 20260808,
+    "eigenvalue_floor": 1e-10,
+    "definition": "fraction of joint latent GP draws with opposite signs at the two endpoints"
+  },
+  "batch": {
+    "pair_count": 4,
+    "new_PDE_endpoint_budget": 8,
+    "endpoints_must_be_disjoint": true,
+    "midpoint_diversity_scale": 0.25,
+    "diversity_floor": 0.25
+  },
+  "ranking_sensitivity": {
+    "top_k": 20,
+    "fits": [
+      {
+        "name": "nominal_saved",
+        "kind": "saved_pretest_model"
+      },
+      {
+        "name": "wide_MLE",
+        "kind": "refit",
+        "lengthscale_bounds": [0.08, 8.0],
+        "signal_std_bounds": [0.2, 100.0]
+      },
+      {
+        "name": "wide_weak_MAP",
+        "kind": "refit_with_log_parameter_prior",
+        "lengthscale_bounds": [0.08, 8.0],
+        "signal_std_bounds": [0.2, 100.0],
+        "log_prior_mean_parameters": [1.0, 1.0, 5.0],
+        "log_prior_std": [1.25, 1.25, 1.5]
+      }
+    ]
+  },
+  "optimization": {
+    "initial_starts": [
+      [0.5, 0.5, 1.0],
+      [1.0, 1.0, 2.0],
+      [0.25, 0.5, 2.0],
+      [0.5, 0.25, 2.0],
+      [2.0, 1.0, 10.0]
+    ],
+    "jitter": 1e-8,
+    "maximum_laplace_iterations": 100,
+    "laplace_tolerance": 1e-10,
+    "maximum_optimizer_iterations": 300,
+    "function_tolerance": 1e-10
+  },
+  "acquisition_score": "joint opposite-sign probability times normalized-distance penalty times local-normal orientation factor",
+  "outcome_policy": "revealed files are read only for state_index exclusion; no outcome column may enter acquisition or sensitivity analysis",
+  "phase": "method development on the known B-C plane; not a confirmatory test",
+  "exact_edge_orbit_used": false,
+  "held_out_CA_region_used": false,
+  "new_PDE_outcomes_used": false
+}

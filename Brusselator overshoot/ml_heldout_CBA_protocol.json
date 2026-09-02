@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_heldout_CBA_adaptive_v1",
+  "geometry_directory": "experiment_outputs/ml_heldout_CBA_geometry_v1",
+  "geometry_mat": "experiment_outputs/ml_heldout_CBA_geometry_v1/ml_heldout_CBA_geometry.mat",
+  "candidate_manifest_csv": "experiment_outputs/ml_heldout_CBA_geometry_v1/heldout_candidate_manifest.csv",
+  "initial_training_csv": "experiment_outputs/ml_heldout_CBA_geometry_v1/allowed_coarse_training_labels.csv",
+  "output_directory": "experiment_outputs/ml_heldout_CBA_adaptive_v1",
+  "classes": ["A", "B", "C"],
+  "feature_column": "normalized_coordinate",
+  "model": {
+    "kind": "independent one-vs-rest probit GPs with normalized marginal probabilities",
+    "kernel": "squared-exponential",
+    "joint_label_draw": "argmax of one joint latent draw from each independent one-vs-rest GP"
+  },
+  "optimization": {
+    "initial_starts": [[0.25, 1.0], [0.5, 2.0], [1.0, 5.0], [2.0, 10.0]],
+    "lengthscale_bounds": [0.05, 8.0],
+    "signal_std_bounds": [0.2, 100.0],
+    "prior_mean_parameters": [1.0, 5.0],
+    "prior_log_std": [1.25, 1.5],
+    "jitter": 1e-8,
+    "maximum_laplace_iterations": 100,
+    "laplace_tolerance": 1e-10,
+    "maximum_optimizer_iterations": 300,
+    "function_tolerance": 1e-10
+  },
+  "acquisition": {
+    "round_count": 4,
+    "endpoints_per_round": 2,
+    "total_new_PDE_budget": 8,
+    "joint_sample_count": 8192,
+    "base_random_seed": 20260809,
+    "eigenvalue_floor": 1e-10,
+    "minimum_grid_separation": 1,
+    "maximum_grid_separation": 8,
+    "distance_scale_challenge_coordinates": 0.04,
+    "novelty_scale_challenge_coordinates": 0.10,
+    "novelty_floor": 0.25,
+    "score": "joint multiclass disagreement probability times distance penalty times midpoint novelty factor",
+    "orientation_factor": 1.0,
+    "orientation_reason": "the candidate family is one-dimensional",
+    "round_rule": "select one unlabeled two-endpoint pair, label both with the frozen PDE, refit, and repeat"
+  },
+  "novelty_handling": {
+    "known_classes_added_to_training": ["A", "B", "C"],
+    "other_or_U_policy": "exclude from one-vs-rest fitting, retain as labeled novelty anchor, continue within the fixed budget",
+    "classifier_must_not_coerce_other_or_U": true
+  },
+  "success_criteria": {
+    "primary": "at least one newly queried state has outcome B",
+    "stronger": "the ordered union of allowed coarse labels and new labels contains adjacent C-B and B-A brackets",
+    "dynamical_followup": "multiclass-guarded edge tracking is attempted separately on each discovered adjacent bracket",
+    "prohibited_claims": ["fractal boundary", "riddled basin", "direct C-A boundary"]
+  },
+  "experimental_separation": {
+    "pairwise_refinement_outcomes_allowed": false,
+    "previously_simulated_refinement_coordinates_used_for_exclusion_only": true,
+    "exact_edge_orbit_used_for_acquisition": false,
+    "historical_knowledge": "a three-point pilot already indicated C-B-A; the confirmatory target is adaptive recovery of the unmapped fine structure"
+  }
+}

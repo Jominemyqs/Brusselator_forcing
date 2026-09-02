@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_BC_matched_benchmark_protocol_v1",
+  "output_root": "experiment_outputs",
+  "geometry_manifest_csv": "experiment_outputs/ml_BC_boundary_geometry_v1/sampling_state_manifest.csv",
+  "geometry_mat_file": "experiment_outputs/ml_BC_boundary_geometry_v1/ml_BC_boundary_geometry.mat",
+  "existing_label_sources": [
+    "experiment_outputs/ml_BC_boundary_initial_labeling_v1/initial_seed_labels.csv",
+    "experiment_outputs/ml_BC_acquisition_labeling_v1/acquisition_labels.csv",
+    "experiment_outputs/ml_BC_fixed_test_labeling_v1/fixed_test_labels.csv",
+    "experiment_outputs/ml_BC_edge_bracket_labeling_v1/edge_bracket_endpoint_labels.csv",
+    "experiment_outputs/ml_BC_pair_acquisition_labeling_v1/pair_acquisition_endpoint_labels.csv"
+  ],
+  "geometry_gate": {
+    "expected_state_count": 289,
+    "expected_geometry_id": "ml_BC_boundary_geometry_v1_N400_Lx40_PC1_PC2",
+    "expected_grid_rows": 17,
+    "expected_grid_columns": 17
+  },
+  "initial_design": {
+    "replicate_count": 12,
+    "training_count": 25,
+    "fixed_anchors": [
+      {
+        "state_index": 1,
+        "required_label": "B"
+      },
+      {
+        "state_index": 289,
+        "required_label": "C"
+      }
+    ],
+    "randomized_maximin_count": 23,
+    "randomized_top_k": 12,
+    "base_random_seed": 20260813,
+    "selection_rule": "starting from the two fixed outcome anchors, repeatedly choose uniformly from the top-k states ranked by Euclidean distance to the current design; no nonanchor outcome is read"
+  },
+  "model": {
+    "family": "ARD squared-exponential probit GP with Laplace inference",
+    "positive_class": "C",
+    "negative_class": "B",
+    "feature_columns": [
+      "normalized_alpha_1",
+      "normalized_alpha_2"
+    ],
+    "fit_kind": "weakly_regularized_MAP",
+    "lengthscale_bounds": [
+      0.08,
+      8.0
+    ],
+    "signal_std_bounds": [
+      0.2,
+      100.0
+    ],
+    "log_prior_mean_parameters": [
+      1.0,
+      1.0,
+      5.0
+    ],
+    "log_prior_std": [
+      1.25,
+      1.25,
+      1.5
+    ],
+    "initial_starts": [
+      [
+        0.5,
+        0.5,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        2.0
+      ],
+      [
+        0.25,
+        0.5,
+        2.0
+      ],
+      [
+        0.5,
+        0.25,
+        2.0
+      ],
+      [
+        2.0,
+        1.0,
+        10.0
+      ]
+    ],
+    "jitter": 1e-08,
+    "maximum_laplace_iterations": 100,
+    "laplace_tolerance": 1e-10,
+    "maximum_optimizer_iterations": 300,
+    "function_tolerance": 1e-10
+  },
+  "pair_geometry": {
+    "maximum_normalized_separation": 0.2500001,
+    "minimum_normalized_separation": 0.1249999,
+    "distance_scale": 0.18,
+    "normal_gradient_step": 0.01,
+    "orientation_floor": 0.05
+  },
+  "joint_posterior_sampling": {
+    "sample_count": 8192,
+    "base_random_seed": 20260825,
+    "eigenvalue_floor": 1e-10
+  },
+  "batch": {
+    "pair_count": 4,
+    "new_PDE_endpoint_budget": 8,
+    "endpoints_must_be_disjoint": true,
+    "midpoint_diversity_scale": 0.25,
+    "diversity_floor": 0.25
+  },
+  "methods": {
+    "space_filling": "endpoint novelty relative to the training design, with short-pair and midpoint-diversity factors",
+    "pointwise_uncertainty": "geometric mean of marginal endpoint entropies, with the same short-pair, local-normal, and midpoint-diversity factors as pair-aware acquisition",
+    "pair_aware": "joint posterior probability of opposite latent signs, with short-pair, local-normal, and midpoint-diversity factors"
+  },
+  "evaluation": {
+    "primary_unit": "initial-design replicate",
+    "primary_metric": "verified B-C bracket fraction among four frozen proposals",
+    "secondary_metrics": [
+      "verified brackets per eight newly revealed endpoint labels",
+      "time to first verified bracket in endpoint-label equivalents",
+      "multiclass-safe refinement yield",
+      "exact E_BC recovery yield"
+    ],
+    "candidate_outcomes_masked_until_proposals_frozen": true,
+    "heldout_CBA_region_used": false,
+    "exact_edge_orbit_used_for_acquisition": false
+  },
+  "interpretation": "controlled repeated robustness benchmark on the fixed B-C development plane; it does not constitute an independent physical experiment or a full-state basin-learning result"
+}

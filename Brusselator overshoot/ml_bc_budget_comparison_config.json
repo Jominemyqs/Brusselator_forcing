@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_BC_budget_comparison_v1",
+  "output_root": "experiment_outputs",
+  "geometry_manifest_csv": "experiment_outputs/ml_BC_boundary_geometry_v1/sampling_state_manifest.csv",
+  "initial_labels_csv": "experiment_outputs/ml_BC_boundary_initial_labeling_v1/initial_seed_labels.csv",
+  "acquisition_labels_csv": "experiment_outputs/ml_BC_acquisition_labeling_v1/acquisition_labels.csv",
+  "initial_model_directory": "experiment_outputs/ml_BC_probabilistic_boundary_v1",
+  "active_proposals_csv": "experiment_outputs/ml_BC_probabilistic_boundary_v1/active_acquisition_proposals.csv",
+  "baseline_proposals_csv": "experiment_outputs/ml_BC_probabilistic_boundary_v1/space_filling_baseline_proposals.csv",
+  "feature_columns": ["normalized_alpha_1", "normalized_alpha_2"],
+  "positive_class": "C",
+  "negative_class": "B",
+  "seed_budget": 25,
+  "added_budget_per_model": 8,
+  "fixed_test_count": 16,
+  "state_285_index": 285,
+  "dense_grid_size": 201,
+  "edge_bracket_proposals_per_model": 4,
+  "edge_bracket_policy": "four disjoint nearest-grid-neighbor pairs straddling p_C=0.5, selected without endpoint PDE labels from the common unused acquisition pool",
+  "frozen_separator_band": {
+    "definition_model": "initial_25_point_GP",
+    "maximum_probability_margin": 0.1
+  },
+  "kernel": {
+    "name": "ARD_squared_exponential",
+    "initial_starts": [
+      [0.5, 0.5, 1.0],
+      [1.0, 1.0, 1.0],
+      [0.25, 0.5, 1.5],
+      [0.5, 0.25, 1.5]
+    ],
+    "lengthscale_bounds": [0.12, 3.0],
+    "signal_std_bounds": [0.2, 30.0],
+    "jitter": 1e-8
+  },
+  "laplace": {
+    "maximum_iterations": 100,
+    "tolerance": 1e-10
+  },
+  "optimizer": {
+    "method": "L-BFGS-B",
+    "maximum_iterations": 250,
+    "function_tolerance": 1e-10
+  },
+  "fixed_test_policy": "fit and freeze both models and all 16 predictions before generating any fixed-test PDE outcome",
+  "uncertainty_functional": "two-dimensional trapezoidal-quadrature integral of p_C(1-p_C) on the common dense plane; separator-band domain frozen from the initial 25-point model",
+  "exact_edge_orbit_used_for_fitting": false,
+  "held_out_CA_region_used": false,
+  "claim_scope": "budget-matched comparison of active and deterministic space-filling acquisition in one frozen two-dimensional B-C plane"
+}

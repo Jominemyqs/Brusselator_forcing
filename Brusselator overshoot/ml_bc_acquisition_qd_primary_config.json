@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_BC_acquisition_qD_primary_v1",
+  "protocol_output_directory": "experiment_outputs/ml_BC_acquisition_qD_primary_protocol_v1",
+  "proposal_output_directory": "experiment_outputs/ml_BC_acquisition_qD_primary_proposals_v1",
+  "evaluation_output_directory": "experiment_outputs/ml_BC_acquisition_qD_primary_evaluation_v1",
+  "geometry_manifest_csv": "experiment_outputs/ml_BC_boundary_geometry_v1/sampling_state_manifest.csv",
+  "complete_label_bank_csv": "experiment_outputs/ml_BC_matched_label_bank_v1/complete_label_bank.csv",
+  "complete_label_bank_manifest_json": "experiment_outputs/ml_BC_matched_label_bank_v1/complete_label_bank_manifest.json",
+  "geometry_gate": {
+    "expected_state_count": 289,
+    "expected_grid_rows": 17,
+    "expected_grid_columns": 17,
+    "expected_geometry_id": "ml_BC_boundary_geometry_v1_N400_Lx40_PC1_PC2"
+  },
+  "matched_designs": {
+    "replicate_count": 40,
+    "maximum_training_count": 35,
+    "training_count_prefixes": [15, 25, 35],
+    "fixed_anchors": [
+      {"state_index": 1, "required_label": "B"},
+      {"state_index": 289, "required_label": "C"}
+    ],
+    "randomized_top_k": 12,
+    "base_random_seed": 20260841,
+    "selection_rule": "starting from the two fixed outcome anchors, repeatedly choose uniformly from the top-k states ranked by Euclidean distance to the current design; n0=15,25,35 are nested prefixes and no nonanchor outcome is read"
+  },
+  "model": {
+    "positive_class": "C",
+    "negative_class": "B",
+    "feature_columns": ["normalized_alpha_1", "normalized_alpha_2"],
+    "kernel_families": ["squared_exponential", "matern_3_2", "matern_5_2"],
+    "lengthscale_bounds": [0.08, 8.0],
+    "signal_std_bounds": [0.2, 100.0],
+    "log_prior_mean_parameters": [1.0, 1.0, 5.0],
+    "log_prior_std": [1.25, 1.25, 1.5],
+    "initial_starts": [
+      [0.5, 0.5, 1.0],
+      [1.0, 1.0, 2.0],
+      [0.25, 0.5, 2.0],
+      [0.5, 0.25, 2.0],
+      [2.0, 1.0, 10.0]
+    ],
+    "jitter": 1e-08,
+    "maximum_laplace_iterations": 100,
+    "laplace_tolerance": 1e-10,
+    "maximum_optimizer_iterations": 300,
+    "function_tolerance": 1e-10
+  },
+  "pair_geometry": {
+    "minimum_normalized_separation": 0.1249999,
+    "maximum_normalized_separation": 0.2500001,
+    "baseline_distance_scale": 0.18,
+    "distance_scale_multipliers": [0.75, 1.0, 1.25],
+    "normal_gradient_step": 0.01,
+    "orientation_floor": 0.05,
+    "admissible_distance_is_fixed_across_scenarios": true
+  },
+  "joint_posterior_sampling": {
+    "sample_count": 8192,
+    "base_random_seed": 20260853,
+    "eigenvalue_floor": 1e-10
+  },
+  "batch": {
+    "pair_count": 4,
+    "new_endpoint_label_budget": 8,
+    "endpoints_must_be_disjoint": true,
+    "midpoint_diversity_scale": 0.25,
+    "diversity_floor": 0.25
+  },
+  "methods": ["space_filling", "pointwise_uncertainty", "pair_aware"],
+  "pair_score_definitions": {
+    "q": "joint posterior probability of opposite latent signs",
+    "qD": "q times the short-pair distance penalty",
+    "qDO": "qD times the local-normal orientation factor"
+  },
+  "scenarios": [
+    {
+      "scenario_id": "baseline",
+      "factor": "reference",
+      "level": "n25_SE_qD_d1.00",
+      "training_count": 25,
+      "kernel_family": "squared_exponential",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "initial_n15",
+      "factor": "initial_training_count",
+      "level": "15",
+      "training_count": 15,
+      "kernel_family": "squared_exponential",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "initial_n35",
+      "factor": "initial_training_count",
+      "level": "35",
+      "training_count": 35,
+      "kernel_family": "squared_exponential",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "kernel_matern32",
+      "factor": "kernel_family",
+      "level": "matern_3_2",
+      "training_count": 25,
+      "kernel_family": "matern_3_2",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "kernel_matern52",
+      "factor": "kernel_family",
+      "level": "matern_5_2",
+      "training_count": 25,
+      "kernel_family": "matern_5_2",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "score_q",
+      "factor": "pair_score_ablation",
+      "level": "q",
+      "training_count": 25,
+      "kernel_family": "squared_exponential",
+      "pair_score": "q",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "score_qDO",
+      "factor": "pair_score_ablation",
+      "level": "qDO",
+      "training_count": 25,
+      "kernel_family": "squared_exponential",
+      "pair_score": "qDO",
+      "distance_scale_multiplier": 1.0
+    },
+    {
+      "scenario_id": "distance_0p75",
+      "factor": "distance_scale_multiplier",
+      "level": "0.75",
+      "training_count": 25,
+      "kernel_family": "squared_exponential",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 0.75
+    },
+    {
+      "scenario_id": "distance_1p25",
+      "factor": "distance_scale_multiplier",
+      "level": "1.25",
+      "training_count": 25,
+      "kernel_family": "squared_exponential",
+      "pair_score": "qD",
+      "distance_scale_multiplier": 1.25
+    }
+  ],
+  "statistics": {
+    "primary_unit": "matched initial-design replicate",
+    "paired_bootstrap_draws": 20000,
+    "paired_bootstrap_seed": 20260867,
+    "budget_curve_endpoint_labels": [2, 4, 6, 8],
+    "exact_sign_test_ignores_ties": true
+  },
+  "evaluation_scope": {
+    "candidate_outcomes_masked_until_proposals_frozen": true,
+    "complete_bank_used_as_retrospective_replay_resource": true,
+    "exact_edge_orbit_used_for_acquisition": false,
+    "heldout_CBA_region_used": false,
+    "new_PDE_integrations": 0,
+    "claim": "qD-primary task-aware acquisition for edge-bracket discovery in a prelocalized pairwise B-C state family",
+    "excluded_claims": [
+      "global basin discovery",
+      "rare-basin discovery",
+      "generalization to arbitrary PDE state families",
+      "realized end-to-end wall-clock savings"
+    ]
+  },
+  "audit_correction": {
+    "issue": "the frozen v1 matched proposal script used return index 1 of predict_proba, which is the latent mean, as if it were p(C)",
+    "correction_in_this_protocol": "use return index 0 of predict_proba for p(C); make qD the primary pair-aware score after the corrected ablation found no detectable yield gain from O",
+    "relationship_to_prior_suite": "the original corrected qDO-primary outputs remain immutable; this extension changes only the declared pair-aware score across the same designs and sensitivity axes",
+    "interpretation": "qD is the parsimonious rule frozen before the prospective physical-chord/POD3 transfer test"
+  }
+}

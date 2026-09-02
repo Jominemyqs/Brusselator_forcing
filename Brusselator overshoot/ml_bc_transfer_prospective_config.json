@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "ml_BC_transfer_prospective_v1",
+  "geometry_directory": "experiment_outputs/ml_BC_transfer_geometry_v1",
+  "geometry_mat": "experiment_outputs/ml_BC_transfer_geometry_v1/ml_BC_transfer_geometry.mat",
+  "geometry_manifest_csv": "experiment_outputs/ml_BC_transfer_geometry_v1/transfer_state_manifest.csv",
+  "protocol_directory": "experiment_outputs/ml_BC_transfer_protocol_v1",
+  "initial_label_directory": "experiment_outputs/ml_BC_transfer_initial_labeling_v1",
+  "initial_labels_csv": "experiment_outputs/ml_BC_transfer_initial_labeling_v1/initial_labels.csv",
+  "proposal_directory": "experiment_outputs/ml_BC_transfer_proposals_v1",
+  "endpoint_label_directory": "experiment_outputs/ml_BC_transfer_endpoint_labeling_v1",
+  "endpoint_labels_csv": "experiment_outputs/ml_BC_transfer_endpoint_labeling_v1/endpoint_labels.csv",
+  "evaluation_directory": "experiment_outputs/ml_BC_transfer_evaluation_v1",
+  "edge_recovery_directory": "experiment_outputs/ml_BC_transfer_edge_recovery_v1",
+  "geometry_gate": {
+    "expected_geometry_id": "ml_BC_transfer_geometry_v1_N400_Lx40_physical_chord_POD3",
+    "expected_state_count": 289,
+    "expected_initial_count": 15,
+    "expected_B_anchor_state_index": 139,
+    "expected_C_anchor_state_index": 151,
+    "minimum_projector_difference_from_PC1_PC2": 0.20
+  },
+  "model": {
+    "positive_class": "C",
+    "negative_class": "B",
+    "feature_columns": ["normalized_alpha_1", "normalized_alpha_2"],
+    "kernel_family": "squared_exponential",
+    "lengthscale_bounds": [0.08, 8.0],
+    "signal_std_bounds": [0.2, 100.0],
+    "log_prior_mean_parameters": [1.0, 1.0, 5.0],
+    "log_prior_std": [1.25, 1.25, 1.5],
+    "initial_starts": [[0.5, 0.5, 1.0], [1.0, 1.0, 2.0], [0.25, 0.5, 2.0], [0.5, 0.25, 2.0], [2.0, 1.0, 10.0]],
+    "jitter": 1e-8,
+    "maximum_laplace_iterations": 100,
+    "laplace_tolerance": 1e-10,
+    "maximum_optimizer_iterations": 300,
+    "function_tolerance": 1e-10
+  },
+  "pair_geometry": {
+    "minimum_normalized_separation": 0.1249999,
+    "maximum_normalized_separation": 0.2500001,
+    "distance_scale": 0.18,
+    "normal_gradient_step": 0.01,
+    "orientation_floor": 0.05
+  },
+  "joint_posterior_sampling": {
+    "sample_count": 8192,
+    "random_seed": 20260891,
+    "eigenvalue_floor": 1e-10
+  },
+  "batch": {
+    "pair_count": 4,
+    "endpoint_budget_per_method": 8,
+    "endpoints_must_be_disjoint_within_method": true,
+    "midpoint_diversity_scale": 0.25,
+    "diversity_floor": 0.25
+  },
+  "methods": ["space_filling", "pointwise_uncertainty", "pair_aware"],
+  "scores": {
+    "space_filling": "sqrt(endpoint novelty product) times D",
+    "pointwise_uncertainty": "sqrt(endpoint entropy product) times D",
+    "pair_aware": "joint opposite-sign probability q times D"
+  },
+  "prospective_scope": {
+    "single_independent_state_family": true,
+    "actual_PDE_labels_only_after_freeze": true,
+    "complete_bank_precomputation": false,
+    "candidate_outcomes_used_for_acquisition": false,
+    "exact_edge_orbit_used_for_acquisition": false,
+    "primary_descriptive_outcomes": ["valid brackets among four", "at least one valid bracket", "labels to first bracket", "conditional E_BC recovery"],
+    "excluded_claims": ["statistical transfer across PDE systems", "global basin discovery", "rare-basin discovery"]
+  }
+}

@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite the associated manuscript and the
+  archived software release once persistent identifiers are available.
+title: >-
+  1D Brusselator forcing-accessibility, edge-state, and probabilistic-
+  acquisition experiments
+type: software
+authors:
+  - family-names: Yu
+    given-names: Qiushi
+version: 0.1.0
+date-released: 2026-09-01
+keywords:
+  - Brusselator
+  - reaction-diffusion
+  - basin boundary
+  - edge state
+  - periodic orbit
+  - active learning
+  - Gaussian process
+abstract: >-
+  Research software for studying transient forcing accessibility, multibasin
+  landing geometry, periodic edge states, and task-aware probabilistic
+  acquisition in the one-dimensional Brusselator.
