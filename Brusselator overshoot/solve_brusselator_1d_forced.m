@@ -86,6 +86,11 @@ D2(1,2)   = 2;
 D2(N,N-1) = 2;   % Neumann boundary conditions
 D2 = D2 / dx^2;
 
+% Optional exact sparse Jacobian; the historical default remains unchanged.
+if strcmp(solver_name,'ode15s') && get_optional_field(solver,'analytic_jacobian',false)
+    ode_options = odeset(ode_options,'Jacobian',@jacobian);
+end
+
 %% define right-hand side of partial differential equation
 function f = rhs(t,u)
     u1 = u(1:N);
@@ -95,6 +100,13 @@ function f = rhs(t,u)
 
     f = [d1*D2*u1 + a - (b+1)*u1 + u1.^2.*u2; ...
          d2*D2*u2 + b*u1 - u1.^2.*u2];
+end
+
+function J = jacobian(t,y)
+    u1 = y(1:N); u2 = y(N+1:2*N); b = Bfun(t);
+    cross = 2*u1.*u2; square = u1.^2;
+    J = [d1*D2 + spdiags(-(b+1)+cross,0,N,N), spdiags(square,0,N,N); ...
+         spdiags(b-cross,0,N,N), d2*D2-spdiags(square,0,N,N)];
 end
 
 %% compute solution
