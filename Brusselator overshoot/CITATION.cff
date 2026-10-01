@@ -1,16 +1,18 @@
 cff-version: 1.2.0
 message: >-
-  If you use this software, please cite the associated manuscript and the
-  archived software release once persistent identifiers are available.
+  If you use this software, please cite this repository and the associated
+  manuscript. No archival DOI has been assigned.
 title: >-
   1D Brusselator forcing-accessibility, edge-state, and probabilistic-
   acquisition experiments
 type: software
+repository-code: "https://github.com/Jominemyqs/Brusselator_forcing"
+url: "https://github.com/Jominemyqs/Brusselator_forcing"
 authors:
   - family-names: Yu
     given-names: Qiushi
-version: 0.1.0
-date-released: 2026-09-01
+version: 0.1.1
+date-released: 2026-10-01
 keywords:
   - Brusselator
   - reaction-diffusion

@@ -6,11 +6,11 @@ records supporting the manuscript
 *Forcing Accessibility, Periodic Edge States, and Task-Aware Probabilistic
 Acquisition in the One-Dimensional Brusselator*.
 
-> **Release status.** This is the first version-controlled research snapshot.
-> Raw numerical trajectories remain outside ordinary Git history because the
-> local output tree is several gigabytes. Before public release, the selected
-> data package must be deposited in a persistent archive and its DOI recorded
-> in `CITATION.cff` and `docs/REPRODUCIBILITY.md`.
+> **Release status.** Version 0.1.1 includes the pointwise-orientation ablation
+> and a checksum-verified bundle of the 18 compact results used by the
+> manuscript Supplement (`data/manuscript_compact_results.zip`). Raw numerical
+> trajectories remain outside Git. No archival DOI or software license has
+> been assigned. See `docs/REPRODUCIBILITY.md` for restoration and scope.
 
 ## Quick navigation
 
